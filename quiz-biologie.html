@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Biologie Cellulaire - 204 Questions</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --bg-card: #1c2128;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --text-muted: #6e7681;
+            --accent: #58a6ff;
+            --accent-hover: #79b8ff;
+            --success: #3fb950;
+            --success-bg: rgba(63, 185, 80, 0.15);
+            --danger: #f85149;
+            --danger-bg: rgba(248, 81, 73, 0.15);
+            --warning: #d29922;
+            --border: #30363d;
+            --gradient: linear-gradient(135deg, #58a6ff 0%, #a371f7 100%);
+        }
+
+        .light-mode {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f6f8fa;
+            --bg-tertiary: #eaeef2;
+            --bg-card: #ffffff;
+            --text-primary: #1f2328;
+            --text-secondary: #656d76;
+            --text-muted: #8c959f;
+            --accent: #0969da;
+            --accent-hover: #0550ae;
+            --success: #1a7f37;
+            --success-bg: rgba(26, 127, 55, 0.1);
+            --danger: #cf222e;
+            --danger-bg: rgba(207, 34, 46, 0.1);
+            --warning: #9a6700;
+            --border: #d0d7de;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: background 0.3s ease, color 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        button, .mode-btn, .section-btn, .option-btn, .toggle-btn, .action-btn, .next-btn {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            max-width: 850px;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .header {
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border);
+            padding: 24px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p { color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px; }
+
+        .header-controls {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 12px;
+        }
+
+        .toggle-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.2s ease;
+            color: var(--text-primary);
+        }
+
+        .toggle-btn:hover { background: var(--bg-tertiary); border-color: var(--accent); }
+
+        .screen { display: none; padding: 32px; animation: fadeIn 0.4s ease; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .mode-btn {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            width: 100%;
+            padding: 20px;
+            margin: 12px 0;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+
+        .mode-btn:hover {
+            border-color: var(--accent);
+            background: var(--bg-tertiary);
+            transform: translateX(4px);
+        }
+
+        .mode-btn .icon {
+            font-size: 2rem;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+        }
+
+        .mode-btn .content { flex: 1; }
+        .mode-btn .title { font-weight: 600; font-size: 1.1rem; color: var(--text-primary); margin-bottom: 4px; }
+        .mode-btn .desc { font-size: 0.85rem; color: var(--text-secondary); }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .section-btn {
+            padding: 16px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .section-btn:hover {
+            border-color: var(--accent);
+            background: var(--bg-tertiary);
+            transform: translateY(-2px);
+        }
+
+        .section-btn .count {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-btn .name { color: var(--text-secondary); font-size: 0.8rem; margin-top: 4px; line-height: 1.3; }
+
+        .progress-bar {
+            height: 4px;
+            background: var(--bg-tertiary);
+            border-radius: 2px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            transition: width 0.4s ease;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .question-number {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 20px;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-value { font-weight: 600; color: var(--text-primary); }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .question-image {
+            max-width: 100%;
+            max-height: 350px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid var(--border);
+        }
+
+        .options { display: flex; flex-direction: column; gap: 10px; }
+
+        .option-btn {
+            padding: 16px 20px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .option-btn:hover:not(.disabled) {
+            border-color: var(--accent);
+            background: var(--bg-tertiary);
+        }
+
+        .option-btn .letter {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .option-btn .option-text {
+            flex: 1;
+            word-break: break-word;
+        }
+
+        .option-btn.correct {
+            border-color: var(--success);
+            background: var(--success-bg);
+        }
+
+        .option-btn.correct .letter { background: var(--success); color: white; }
+
+        .option-btn.wrong {
+            border-color: var(--danger);
+            background: var(--danger-bg);
+        }
+
+        .option-btn.wrong .letter { background: var(--danger); color: white; }
+
+        .option-btn.eliminated {
+            opacity: 0.3;
+            text-decoration: line-through;
+            pointer-events: none;
+        }
+
+        .option-btn.disabled { pointer-events: none; }
+
+        /* Quiz Layout with History Sidebar */
+        .quiz-layout {
+            display: flex;
+            gap: 20px;
+        }
+
+        .quiz-main {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .quiz-sidebar {
+            width: 180px;
+            flex-shrink: 0;
+        }
+
+        .history-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            position: sticky;
+            top: 20px;
+        }
+
+        .history-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-total {
+            font-size: 0.9rem;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            font-size: 0.8rem;
+        }
+
+        .history-item.correct {
+            background: var(--success-bg);
+            border-left: 3px solid var(--success);
+        }
+
+        .history-item.wrong {
+            background: var(--danger-bg);
+            border-left: 3px solid var(--danger);
+        }
+
+        .history-item .q-num {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .history-item .q-result {
+            margin-left: auto;
+            font-size: 1rem;
+        }
+
+        .quiz-back-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 8px 0;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+        }
+
+        .quiz-back-btn:hover { color: var(--accent); }
+
+        @media (max-width: 750px) {
+            body { align-items: flex-start; }
+            .quiz-layout { flex-direction: column; }
+            .quiz-sidebar { width: 100%; order: -1; }
+            .history-panel { position: static; }
+            .history-list { flex-direction: row; flex-wrap: wrap; max-height: none; }
+            .history-item { flex: 0 0 auto; }
+            .next-btn { position: sticky; bottom: 12px; z-index: 5; }
+        }
+
+        .next-btn {
+            display: none;
+            width: 100%;
+            padding: 16px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 24px;
+            transition: all 0.2s ease;
+        }
+
+        .next-btn.show { display: block; animation: fadeIn 0.3s ease; }
+        .next-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        .feedback {
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-top: 16px;
+            font-weight: 500;
+            display: none;
+            font-size: 0.95rem;
+        }
+
+        .feedback.show { display: block; animation: fadeIn 0.3s ease; }
+        .feedback.correct { background: var(--success-bg); color: var(--success); border: 1px solid var(--success); }
+        .feedback.wrong { background: var(--danger-bg); color: var(--danger); border: 1px solid var(--danger); }
+
+        .result-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .result-score {
+            font-size: 4rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .result-grade {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 24px 0;
+        }
+
+        .result-stat {
+            background: var(--bg-tertiary);
+            padding: 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .result-stat .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .result-stat .label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .action-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+
+        .action-btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .action-btn.primary {
+            background: var(--gradient);
+            color: white;
+            border: none;
+        }
+
+        .action-btn:hover { transform: translateY(-1px); opacity: 0.9; }
+
+        .dashboard-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .dashboard-card h3 {
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .progress-history { max-height: 200px; overflow-y: auto; }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .weak-questions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+        .weak-q {
+            background: var(--danger-bg);
+            color: var(--danger);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            border: 1px solid var(--danger);
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 20px;
+            padding: 8px 0;
+            transition: color 0.2s;
+        }
+
+        .back-btn:hover { color: var(--accent); }
+
+        .confetti { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; }
+        .confetti-piece { position: absolute; width: 10px; height: 10px; animation: confetti-fall 3s ease-out forwards; }
+        @keyframes confetti-fall { 0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+
+        /* Zoom Modal for Images */
+        .zoom-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 10px;
+            cursor: pointer;
+            animation: fadeIn 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .zoom-modal.show { display: flex; }
+
+        .zoom-modal-image {
+            max-width: 98%;
+            max-height: 80vh;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            object-fit: contain;
+        }
+
+        .zoom-hint {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+            margin-top: 12px;
+            text-align: center;
+        }
+
+        .question-image {
+            cursor: zoom-in;
+            transition: transform 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .question-image:hover {
+            transform: scale(1.02);
+        }
+
+        /* Touch-friendly tap targets */
+        @media (pointer: coarse) {
+            .option-btn { min-height: 52px; }
+            .toggle-btn { min-width: 44px; min-height: 44px; }
+            .question-image:hover { transform: none; }
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .container { border-radius: 12px; }
+            .header { padding: 16px; }
+            .header h1 { font-size: 1.2rem; }
+            .header p { font-size: 0.8rem; }
+            .header-controls { position: static; transform: none; margin-top: 12px; justify-content: center; }
+            .screen { padding: 16px; }
+            .question-header { flex-direction: column; gap: 12px; align-items: flex-start; }
+            .question-number { font-size: 0.8rem; }
+            .stats-bar { width: 100%; justify-content: space-between; }
+            .stat { font-size: 0.85rem; }
+            .question-text { font-size: 1rem; line-height: 1.5; }
+            .question-image { max-height: 200px; }
+            .option-btn { padding: 14px 16px; font-size: 0.95rem; }
+            .option-btn .letter { width: 28px; height: 28px; font-size: 0.85rem; }
+            .result-stats { grid-template-columns: 1fr; }
+            .section-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .section-btn { padding: 12px; }
+            .section-btn .count { font-size: 1.5rem; }
+            .section-btn .name { font-size: 0.75rem; }
+            .mode-btn { padding: 16px; gap: 12px; }
+            .mode-btn .icon { width: 40px; height: 40px; font-size: 1.5rem; }
+            .mode-btn .title { font-size: 1rem; }
+            .mode-btn .desc { font-size: 0.8rem; }
+            .next-btn { padding: 14px; font-size: 0.95rem; }
+            .feedback { padding: 12px 14px; font-size: 0.9rem; }
+            .quiz-back-btn { font-size: 0.85rem; margin-bottom: 12px; }
+            .action-btns { flex-direction: column; }
+            .action-btn { min-width: auto; }
+        }
+
+        @media (max-width: 400px) {
+            .section-grid { grid-template-columns: 1fr; }
+            .stats-bar { flex-direction: column; gap: 6px; align-items: flex-start; }
+            .history-list { gap: 4px; }
+            .history-item { padding: 6px 8px; font-size: 0.75rem; }
+        }
+
+        .section-title { font-size: 1.2rem; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Quiz Biologie Cellulaire</h1>
+            <p>204 Questions - 6 Themes</p>
+            <div class="header-controls">
+                <button class="toggle-btn" onclick="toggleTheme()" id="themeBtn" title="Mode clair/sombre">&#9790;</button>
+                <button class="toggle-btn" onclick="toggleSound()" id="soundBtn" title="Son On/Off">&#128266;</button>
+            </div>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="startScreen" class="screen active">
+            <div class="section-title">Choisissez votre mode</div>
+
+            <button class="mode-btn" onclick="startQuiz('random')">
+                <div class="icon">&#127922;</div>
+                <div class="content">
+                    <div class="title">Mode Aleatoire</div>
+                    <div class="desc">204 questions melangees - Testez toutes vos connaissances</div>
+                </div>
+            </button>
+
+            <button class="mode-btn" onclick="showSections()">
+                <div class="icon">&#128218;</div>
+                <div class="content">
+                    <div class="title">Mode par Theme</div>
+                    <div class="desc">Etudiez un theme specifique a la fois</div>
+                </div>
+            </button>
+
+            <button class="mode-btn" onclick="startQuiz('section', 5)">
+                <div class="icon">&#128444;</div>
+                <div class="content">
+                    <div class="title">Mode Schemas</div>
+                    <div class="desc">8 questions visuelles - Identifiez les structures cellulaires</div>
+                </div>
+            </button>
+
+            <button class="mode-btn" onclick="showDashboard()">
+                <div class="icon">&#128200;</div>
+                <div class="content">
+                    <div class="title">Mes Statistiques</div>
+                    <div class="desc">Progression et questions a revoir</div>
+                </div>
+            </button>
+        </div>
+
+        <!-- Section Selection Screen -->
+        <div id="sectionScreen" class="screen">
+            <button class="back-btn" onclick="showStart()">&#8592; Retour</button>
+            <div class="section-title">Choisissez un theme</div>
+            <div class="section-grid">
+                <button class="section-btn" onclick="startQuiz('section', 0)">
+                    <div class="count">32</div>
+                    <div class="name">Introduction & Concepts</div>
+                </button>
+                <button class="section-btn" onclick="startQuiz('section', 1)">
+                    <div class="count">74</div>
+                    <div class="name">Constituants Matiere Vivante</div>
+                </button>
+                <button class="section-btn" onclick="startQuiz('section', 2)">
+                    <div class="count">48</div>
+                    <div class="name">Cellule Eucaryote</div>
+                </button>
+                <button class="section-btn" onclick="startQuiz('section', 3)">
+                    <div class="count">22</div>
+                    <div class="name">Mitochondries</div>
+                </button>
+                <button class="section-btn" onclick="startQuiz('section', 4)">
+                    <div class="count">20</div>
+                    <div class="name">Cytosquelette</div>
+                </button>
+                <button class="section-btn" onclick="startQuiz('section', 5)">
+                    <div class="count">8</div>
+                    <div class="name">Schemas Visuels</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quizScreen" class="screen">
+            <button class="quiz-back-btn" onclick="confirmQuit()">&#8592; Quitter</button>
+
+            <div class="quiz-layout">
+                <div class="quiz-main">
+                    <div class="progress-bar">
+                        <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+                    </div>
+
+                    <div class="question-header">
+                        <span id="questionNumber" class="question-number">Question 1/204</span>
+                        <div class="stats-bar">
+                            <span class="stat">&#128293; Serie: <span id="streakDisplay" class="stat-value">0</span></span>
+                            <span class="stat">Total: <span id="totalDisplay" class="stat-value">0/0</span></span>
+                        </div>
+                    </div>
+
+                    <div id="questionText" class="question-text"></div>
+                    <img id="questionImage" class="question-image" style="display: none;" />
+                    <div id="options" class="options"></div>
+                    <div id="feedback" class="feedback"></div>
+
+                    <button id="nextBtn" class="next-btn" onclick="nextQuestion()">
+                        Question suivante &#8594;
+                    </button>
+                </div>
+
+                <div class="quiz-sidebar">
+                    <div class="history-panel">
+                        <div class="history-title">
+                            Historique
+                            <span id="historyTotal" class="history-total">0/0</span>
+                        </div>
+                        <div id="historyListSidebar" class="history-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="resultsScreen" class="screen">
+            <div class="result-card">
+                <div id="finalScore" class="result-score">0</div>
+                <div id="finalGrade" class="result-grade">-</div>
+            </div>
+
+            <div class="result-stats">
+                <div class="result-stat">
+                    <div id="correctCount" class="value">0</div>
+                    <div class="label">Bonnes reponses</div>
+                </div>
+                <div class="result-stat">
+                    <div id="accuracy" class="value">0%</div>
+                    <div class="label">Precision</div>
+                </div>
+                <div class="result-stat">
+                    <div id="bestStreak" class="value">0</div>
+                    <div class="label">Meilleure serie</div>
+                </div>
+            </div>
+
+            <div id="improvement" style="text-align: center; margin-bottom: 24px; font-size: 1rem; color: var(--text-secondary);"></div>
+
+            <div class="action-btns">
+                <button class="action-btn primary" onclick="restartQuiz()">&#128260; Rejouer</button>
+                <button class="action-btn" onclick="showStart()">&#127968; Menu</button>
+                <button class="action-btn" onclick="reviewMistakes()">&#128221; Revoir erreurs</button>
+            </div>
+        </div>
+
+        <!-- Dashboard Screen -->
+        <div id="dashboardScreen" class="screen">
+            <button class="back-btn" onclick="showStart()">&#8592; Retour</button>
+            <div class="section-title">&#128200; Mes Statistiques</div>
+
+            <div class="dashboard-card">
+                <h3>&#127942; Performances</h3>
+                <div class="result-stats" style="margin: 0;">
+                    <div class="result-stat">
+                        <div id="dashBestScore" class="value">-</div>
+                        <div class="label">Meilleur score</div>
+                    </div>
+                    <div class="result-stat">
+                        <div id="dashAvgScore" class="value">-</div>
+                        <div class="label">Score moyen</div>
+                    </div>
+                    <div class="result-stat">
+                        <div id="dashTotalGames" class="value">0</div>
+                        <div class="label">Parties jouees</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>&#128200; Historique</h3>
+                <div id="dashboardHistory" class="progress-history"></div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>&#9888; Questions a revoir</h3>
+                <div id="weakQuestions" class="weak-questions">
+                    <span style="color: var(--text-muted);">Aucune donnee</span>
+                </div>
+            </div>
+
+            <button class="action-btn" style="width: 100%;" onclick="clearProgress()">
+                &#128465; Reinitialiser les statistiques
+            </button>
+        </div>
+    </div>
+
+    <div id="confettiContainer" class="confetti"></div>
+
+    <!-- Zoom Modal -->
+    <div id="zoomModal" class="zoom-modal" onclick="closeZoomModal(event)">
+        <img id="zoomModalImage" class="zoom-modal-image" src="" alt="Zoom image">
+        <div class="zoom-hint">Cliquez pour fermer</div>
+    </div>
+
+    <script>
+        // 204 Questions Data
+        const questions = [
+  { id: 1, section: 0, question: "Quel est le sujet principal du cours de Biologie Cellulaire Animale ?", options: ["La botanique et la photosynthèse", "La structure et le fonctionnement de la cellule animale", "La génétique des virus", "L'anatomie des systèmes d'organes"], correct: 1 },
+  { id: 2, section: 0, question: "Quelles sont les abréviations utilisées pour \"cellule\" et \"cellulaire\" ?", options: ["C / Cel", "Cel / Cr", "C / Cr", "Ce / CeR"], correct: 2 },
+  { id: 3, section: 0, question: "Pourquoi est-il fondamental d'étudier la cellule ?", options: ["Car elle est la plus petite partie inerte de la matière.", "Car l'organisme est constitué de milliards de cellules qui assurent son fonctionnement.", "Car les cellules sont uniquement responsables des maladies.", "Car c'est le seul composant du corps visible à l'œil nu."], correct: 1 },
+  { id: 4, section: 0, question: "Quel organite est responsable de la production d'énergie (ATP) par la respiration ?", options: ["Le noyau", "Le lysosome", "La mitochondrie", "L'appareil de Golgi"], correct: 2 },
+  { id: 5, section: 0, question: "Quelle structure est principalement responsable de la production des protéines ?", options: ["Le réticulum endoplasmique rugueux (REG)", "Le centrosome", "La membrane plasmique", "Le réticulum endoplasmique lisse (REL)"], correct: 0 },
+  { id: 6, section: 0, question: "Comment s'appelle le processus de multiplication par division cellulaire décrit dans l'introduction ?", options: ["La méiose", "La mitose", "L'homéostasie", "La photosynthèse"], correct: 1 },
+  { id: 7, section: 0, question: "Une division cellulaire anarchique et incontrôlée peut conduire à quelle pathologie ?", options: ["Une infection virale", "Le diabète", "Un cancer", "L'anémie"], correct: 2 },
+  { id: 8, section: 0, question: "Quel est le rôle des mitochondries dans la respiration cellulaire ?", options: ["Stocker l'ADN de la cellule.", "Synthétiser les protéines.", "Produire de l'énergie (ATP) en utilisant de l'oxygène.", "Dégrader les déchets cellulaires."], correct: 2 },
+  { id: 9, section: 0, question: "Quel est le nom complet de la molécule d'ATP ?", options: ["Acide Désoxyribonucléique Tétraphosphate", "Adénine-Thymine-Purine", "Acide Tri-Phosphorique", "Adénosine Triphosphate"], correct: 3 },
+  { id: 10, section: 0, question: "Quelle est la définition d'un tissu cellulaire ?", options: ["Un ensemble d'organes aux fonctions similaires.", "Un regroupement de cellules de même type.", "Un seul organite très complexe.", "La membrane qui entoure une cellule."], correct: 1 },
+  { id: 11, section: 0, question: "L'ouvrage \"La Biologie en BD\" est présenté comme une approche pour rendre la biologie plus... ?", options: ["Complexe et théorique", "Amusante et accessible", "Axée sur la physique", "Historique et philosophique"], correct: 1 },
+  { id: 12, section: 0, question: "Lequel de ces thèmes n'est PAS cité au programme de \"La Biologie en BD\" ?", options: ["La génétique", "La respiration cellulaire", "L'histoire des mathématiques", "Les cellules animales et végétales"], correct: 2 },
+  { id: 13, section: 0, question: "Selon le document, les organismes vivants sont constitués de milliards de quoi ?", options: ["Tissus", "Organes", "Molécules d'eau", "Cellules"], correct: 3 },
+  { id: 14, section: 0, question: "Quelle est la définition de la cellule animale donnée dans l'aperçu de ChatGPT ?", options: ["Une cellule procaryote sans noyau.", "L'unité de base des plantes.", "Une cellule eucaryote avec un noyau bien défini.", "Un organisme unicellulaire capable de photosynthèse."], correct: 2 },
+  { id: 15, section: 0, question: "Quel organite contient l'ADN et contrôle les activités cellulaires ?", options: ["La mitochondrie", "Le noyau", "Le ribosome", "L'appareil de Golgi"], correct: 1 },
+  { id: 16, section: 0, question: "Quelle structure souple délimite la cellule et régule les échanges ?", options: ["La paroi cellulaire", "L'enveloppe nucléaire", "La membrane plasmique", "Le cytosquelette"], correct: 2 },
+  { id: 17, section: 0, question: "Quel est le rôle des ribosomes ?", options: ["La production d'énergie (ATP).", "La synthèse des protéines.", "La digestion des déchets.", "Le stockage des lipides."], correct: 1 },
+  { id: 18, section: 0, question: "À quoi sert l'appareil de Golgi ?", options: ["À contenir le matériel génétique.", "À synthétiser les lipides et assurer la détoxication.", "À produire de l'énergie par la respiration.", "À modifier, trier et emballer les protéines pour leur transport."], correct: 3 },
+  { id: 19, section: 0, question: "Quelle est la fonction des lysosomes ?", options: ["La synthèse des protéines.", "La division cellulaire.", "La dégradation des déchets et des substances étrangères.", "La régulation des échanges avec l'extérieur."], correct: 2 },
+  { id: 20, section: 0, question: "Citez une particularité de la cellule animale par opposition à la cellule végétale.", options: ["Elle possède des chloroplastes.", "Elle est toujours de forme rectangulaire.", "Elle ne possède pas de paroi cellulaire.", "Elle ne possède pas de mitochondries."], correct: 2 },
+  { id: 21, section: 0, question: "Quelle est la fonction du cytosquelette ?", options: ["Stocker l'eau de la cellule.", "Assurer la digestion intracellulaire.", "Donner sa forme et sa mobilité à la cellule.", "Produire les hormones."], correct: 2 },
+  { id: 22, section: 0, question: "L'homéostasie est le maintien de :", options: ["La température extérieure.", "La division cellulaire.", "La stabilité du milieu interne de l'organisme.", "La quantité d'ADN dans le noyau."], correct: 2 },
+  { id: 23, section: 0, question: "Selon la diapositive 15, qu'est-ce qui définit un organisme vivant ?", options: ["Sa capacité à rester immobile.", "Le fait qu'il soit composé uniquement d'atomes de carbone.", "Le fait qu'il possède des propriétés dynamiques (se reproduit, utilise l'énergie, etc.).", "Sa couleur verte."], correct: 2 },
+  { id: 24, section: 0, question: "Laquelle de ces affirmations n'est PAS une propriété dynamique d'un organisme vivant ?", options: ["Se multiplier par division cellulaire.", "Extraire de l'énergie du milieu environnant.", "Maintenir une température constante de 100°C.", "Élaborer ses propres constituants."], correct: 2 },
+  { id: 25, section: 0, question: "Comment définit-on le passage de l'organisme à la cellule en termes d'organisation ?", options: ["Cellules → Tissus → Organes", "Organes → Tissus → Cellules", "Tissus → Organes → Cellules", "Cellules → Organes → Tissus"], correct: 1 },
+  { id: 26, section: 0, question: "Qu'est-ce qu'un organisme pluricellulaire ?", options: ["Un organisme contenant de nombreuses cellules.", "Un organisme capable de vivre dans plusieurs milieux.", "Une cellule contenant plusieurs noyaux.", "Un organisme se reproduisant très rapidement."], correct: 0 },
+  { id: 27, section: 0, question: "Qu'est-ce qu'un organisme unicellulaire ?", options: ["Une cellule qui ne peut pas se diviser.", "Un organisme formé d'une seule cellule.", "Un tissu composé d'un seul type de cellule.", "Une cellule sans organites."], correct: 1 },
+  { id: 28, section: 0, question: "Depuis quelle année sait-on que tous les organismes sont composés de cellules ?", options: ["1665", "1838", "1953", "2001"], correct: 1 },
+  { id: 29, section: 0, question: "Quelles sont les deux capacités fondamentales de la cellule en tant qu'unité de la matière vivante ?", options: ["La photosynthèse et la production de chaleur.", "La reproduction et l'assurance des processus métaboliques.", "Le mouvement et la communication verbale.", "La rigidité et l'imperméabilité."], correct: 1 },
+  { id: 30, section: 0, question: "Dans le schéma de la cellule, quelle structure entoure le noyau ?", options: ["L'appareil de Golgi", "La membrane plasmique", "L'enveloppe nucléaire", "Le lysosome"], correct: 2 },
+  { id: 31, section: 0, question: "Que contient le cytoplasme ?", options: ["Uniquement de l'eau pure.", "L'ADN de la cellule.", "Les organites baignant dans le cytosol.", "Uniquement le noyau."], correct: 2 },
+  { id: 32, section: 0, question: "Quel organite est impliqué dans la division cellulaire et contient les centrioles ?", options: ["Le centrosome", "Le lysosome", "La mitochondrie", "Le ribosome"], correct: 0 },
+  { id: 33, section: 1, question: "Quels sont les quatre atomes les plus abondants dans les cellules animales ?", options: ["Oxygène, Silicium, Aluminium, Fer", "Oxygène, Carbone, Hydrogène, Azote", "Carbone, Calcium, Phosphore, Sodium", "Azote, Soufre, Potassium, Chlore"], correct: 1 },
+  { id: 34, section: 1, question: "L'ensemble C, H, O, N, Ca, S, P représente quel pourcentage de la matière organique ?", options: ["50%", "75%", "99%", "100%"], correct: 2 },
+  { id: 35, section: 1, question: "Qu'est-ce qu'un \"atome trace\" ?", options: ["Un atome radioactif utilisé pour suivre les réactions.", "Un atome présent en très petite quantité mais indispensable.", "Un atome qui n'existe que dans les végétaux.", "L'atome le plus abondant dans un organisme."], correct: 1 },
+  { id: 36, section: 1, question: "Quelle est la composition d'un atome ?", options: ["Un noyau d'électrons entouré de protons.", "Un noyau de protons et de neutrons, entouré d'un nuage d'électrons.", "Uniquement des neutrons.", "Un noyau de neutrons entouré de protons."], correct: 1 },
+  { id: 37, section: 1, question: "Quelle est la charge électrique respective d'un proton, d'un électron et d'un neutron ?", options: ["(+), (-), (0)", "(-), (+), (0)", "(0), (+), (-)", "(+), (0), (-)"], correct: 0 },
+  { id: 38, section: 1, question: "Pourquoi un atome est-il électriquement neutre ?", options: ["Parce qu'il n'a que des neutrons.", "Parce qu'il a plus de protons que d'électrons.", "Parce qu'il a autant de protons que d'électrons.", "Parce qu'il a plus d'électrons que de protons."], correct: 2 },
+  { id: 39, section: 1, question: "Qu'est-ce qu'un ion ?", options: ["Un atome qui a changé son nombre de protons.", "Un atome qui a gagné ou perdu un ou plusieurs électrons.", "Une molécule composée de plusieurs atomes identiques.", "Un atome qui a perdu tous ses neutrons."], correct: 1 },
+  { id: 40, section: 1, question: "Un cation est un ion chargé ____ qui a ____ un électron.", options: ["négativement / gagné", "positivement / perdu", "positivement / gagné", "négativement / perdu"], correct: 1 },
+  { id: 41, section: 1, question: "Dans la molécule d'eau (H₂O), l'oxygène est dit électronégatif car :", options: ["Il repousse les électrons.", "Il a une charge positive.", "Il attire fortement les électrons des liaisons.", "Il partage équitablement les électrons."], correct: 2 },
+  { id: 42, section: 1, question: "Qu'est-ce qu'une liaison covalente ?", options: ["Une attraction entre ions de charges opposées.", "Une liaison forte basée sur le partage d'électrons entre atomes.", "Une liaison faible entre molécules d'eau.", "Le transfert complet d'un électron d'un atome à un autre."], correct: 1 },
+  { id: 43, section: 1, question: "Pourquoi la molécule d'eau est-elle dite \"polaire\" ?", options: ["Parce qu'elle est toujours gelée aux pôles de la Terre.", "Parce qu'elle a une répartition inégale des charges, créant un pôle positif et un pôle négatif.", "Parce qu'elle ne possède aucune charge électrique.", "Parce qu'elle est composée de trois atomes."], correct: 1 },
+  { id: 44, section: 1, question: "Quel type de liaison faible permet la cohésion entre les molécules d'eau ?", options: ["La liaison ionique", "La liaison covalente", "La liaison hydrogène", "La liaison peptidique"], correct: 2 },
+  { id: 45, section: 1, question: "Quelle propriété de l'eau lui permet de dissoudre les sels comme le NaCl ?", options: ["Sa température élevée.", "Sa polarité, qui lui permet d'entourer les ions.", "Son absence de charge.", "Sa grande taille moléculaire."], correct: 1 },
+  { id: 46, section: 1, question: "Qu'est-ce qu'une liaison ionique ?", options: ["Le partage d'électrons entre deux atomes.", "Une liaison faible entre molécules polaires.", "L'attraction entre un cation et un anion après un transfert d'électron.", "Une liaison qui ne se forme que dans les métaux."], correct: 2 },
+  { id: 47, section: 1, question: "Sous quelles deux formes rencontre-t-on les sels minéraux dans les organismes ?", options: ["Liquide et gazeuse.", "Solide (squelette) et en solution (ions).", "Uniquement sous forme d'ions.", "Uniquement sous forme solide."], correct: 1 },
+  { id: 48, section: 1, question: "Quel sel minéral est un constituant majeur du squelette ?", options: ["Le sodium", "Le fer", "Le calcium", "Le chlore"], correct: 2 },
+  { id: 49, section: 1, question: "Lequel de ces rôles n'est PAS attribué au magnésium (Mg²⁺) ?", options: ["Participer à la production d'énergie.", "Transporter l'oxygène dans le sang.", "Participer à la décontraction des muscles.", "Réguler l'humeur."], correct: 1 },
+  { id: 50, section: 1, question: "Le calcium (Ca²⁺) est essentiel pour la minéralisation des os, mais aussi pour :", options: ["La digestion des graisses.", "La couleur des yeux.", "La contraction musculaire.", "La production d'urine."], correct: 2 },
+  { id: 51, section: 1, question: "Le sodium (Na⁺) et le potassium (K⁺) sont essentiels pour :", options: ["La transmission de l'influx nerveux.", "La rigidité des os.", "La couleur de la peau.", "Le transport de l'oxygène."], correct: 0 },
+  { id: 52, section: 1, question: "Un excès de sodium dans l'alimentation peut exposer à :", options: ["L'anémie.", "Une baisse de la pression artérielle.", "Une hausse de la pression artérielle.", "Le diabète."], correct: 2 },
+  { id: 53, section: 1, question: "Quel est le rôle du fer (Fe) ?", options: ["Il est essentiel à la coagulation du sang.", "Il est un constituant de l'hémoglobine pour le transport de l'oxygène.", "Il régule le pH de l'estomac.", "Il participe à la contraction musculaire."], correct: 1 },
+  { id: 54, section: 1, question: "Le chlore (Cl⁻) est impliqué dans la fabrication de :", options: ["L'insuline dans le pancréas.", "L'acide chlorhydrique dans l'estomac.", "L'hémoglobine dans les globules rouges.", "L'ADN dans le noyau."], correct: 1 },
+  { id: 55, section: 1, question: "Qu'est-ce qu'une molécule organique ?", options: ["Toute molécule contenant de l'oxygène.", "Une molécule produite par les êtres vivants, basée sur un squelette de carbone.", "Une molécule qui ne se dissout pas dans l'eau.", "Uniquement les molécules d'ADN et d'ARN."], correct: 1 },
+  { id: 56, section: 1, question: "Quelles sont les 4 grandes classes de macromolécules ?", options: ["Eau, sels, vitamines, oligo-éléments.", "Glucides, lipides, protéines, acides nucléiques.", "Atomes, ions, molécules, organites.", "ADN, ARN, ATP, ADP."], correct: 1 },
+  { id: 57, section: 1, question: "Que signifient ADN et ARN ?", options: ["Atome Dynamique Notable / Atome Rapide Notable", "Azote-Deutérium-Néon / Azote-Radium-Néon", "Acide DésoxyriboNucléique / Acide RiboNucléique", "Adénine-Nucléotide / Ribose-Nucléotide"], correct: 2 },
+  { id: 58, section: 1, question: "Un polymère est une grande molécule composée de la répétition de :", options: ["Organites", "Cellules", "Monomères", "Atomes de carbone"], correct: 2 },
+  { id: 59, section: 1, question: "Le glycogène est un polymère de quel monomère ?", options: ["Acide aminé", "Glucose", "Nucléotide", "Acide gras"], correct: 1 },
+  { id: 60, section: 1, question: "Qu'est-ce qu'un groupement fonctionnel ?", options: ["Un organite qui assure une fonction.", "Un groupe d'atomes qui donne à une molécule ses propriétés chimiques.", "Une protéine qui fonctionne comme une enzyme.", "La partie non réactive d'une molécule."], correct: 1 },
+  { id: 61, section: 1, question: "Quel est le nom du groupement -OH et quelle propriété confère-t-il ?", options: ["Carboxyle ; rend la molécule acide.", "Amine ; rend la molécule basique.", "Hydroxyle ; augmente la solubilité dans l'eau (polarité).", "Phosphate ; stocke l'énergie."], correct: 2 },
+  { id: 62, section: 1, question: "Quel est le nom du groupement -COOH et quelle est sa nature ?", options: ["Amine, basique.", "Hydroxyle, neutre.", "Carboxyle, acide.", "Carbonyle, polaire."], correct: 2 },
+  { id: 63, section: 1, question: "Comment un groupement -COOH agit-il en tant qu'acide ?", options: ["En captant un proton (H⁺).", "En libérant un proton (H⁺).", "En captant un électron.", "En formant une double liaison."], correct: 1 },
+  { id: 64, section: 1, question: "Un pH de 3 est ____, tandis qu'un pH de 9 est ____.", options: ["acide / basique", "basique / acide", "neutre / acide", "acide / neutre"], correct: 0 },
+  { id: 65, section: 1, question: "Quel est le nom du groupement -NH₂ et quelle est sa nature ?", options: ["Carboxyle, acide.", "Amine, basique.", "Hydroxyle, polaire.", "Phosphate, énergétique."], correct: 1 },
+  { id: 66, section: 1, question: "Comment un groupement -NH₂ agit-il en tant que base ?", options: ["En libérant un proton (H⁺).", "En captant un proton (H⁺).", "En libérant un électron.", "En créant des liaisons hydrogène."], correct: 1 },
+  { id: 67, section: 1, question: "Le groupement phosphate (PO₄³⁻) est crucial pour le transfert d'énergie car il est un composant de :", options: ["L'hémoglobine", "L'ADN", "L'ATP", "Le cholestérol"], correct: 2 },
+  { id: 68, section: 1, question: "Quel est l'autre nom des glucides ?", options: ["Sucres", "Graisses", "Protéines", "Enzymes"], correct: 0 },
+  { id: 69, section: 1, question: "Qu'est-ce qu'un monosaccharide ?", options: ["Un sucre complexe formé de nombreuses unités.", "Un sucre simple, l'unité de base des glucides, comme le glucose.", "Une chaîne d'acides aminés.", "Une molécule de stockage d'énergie lipidique."], correct: 1 },
+  { id: 70, section: 1, question: "Quelle est la formule chimique du glucose ?", options: ["H₂O", "CO₂", "C₆H₁₂O₆", "CH₄"], correct: 2 },
+  { id: 71, section: 1, question: "Quelle est la principale fonction du glucose dans la cellule ?", options: ["Stocker l'information génétique.", "Constituer la membrane plasmique.", "Agir comme une enzyme.", "Fournir de l'énergie par la respiration cellulaire."], correct: 3 },
+  { id: 72, section: 1, question: "Comment les animaux stockent-ils le glucose ?", options: ["Sous forme d'amidon.", "Sous forme de glycogène.", "Sous forme de cellulose.", "Ils ne le stockent pas."], correct: 1 },
+  { id: 73, section: 1, question: "Comment les végétaux stockent-ils le glucose ?", options: ["Sous forme d'amidon.", "Sous forme de glycogène.", "Sous forme de cholestérol.", "Directement dans leurs feuilles."], correct: 0 },
+  { id: 74, section: 1, question: "Les protéines peuvent représenter jusqu'à quel pourcentage du poids sec d'une cellule ?", options: ["10%", "25%", "50%", "90%"], correct: 2 },
+  { id: 75, section: 1, question: "Laquelle de ces fonctions n'est PAS assurée par des protéines ?", options: ["La catalyse (enzymes).", "Le soutien (kératine).", "Le stockage de l'information génétique à long terme.", "L'immunité (anticorps)."], correct: 2 },
+  { id: 76, section: 1, question: "Quel est le monomère qui constitue les protéines ?", options: ["Le glucose", "Le nucléotide", "L'acide aminé", "L'acide gras"], correct: 2 },
+  { id: 77, section: 1, question: "De quels trois éléments est toujours constitué un acide aminé ?", options: ["Un groupement -OH, un groupement -COOH, un radical R.", "Un groupement -COOH, un groupement -NH₂, un radical R.", "Un groupement phosphate, un sucre, une base azotée.", "Un glycérol et trois radicaux R."], correct: 1 },
+  { id: 78, section: 1, question: "Combien existe-t-il d'acides aminés standards ?", options: ["4", "20", "64", "118"], correct: 1 },
+  { id: 79, section: 1, question: "Comment appelle-t-on une chaîne d'acides aminés ?", options: ["Un polysaccharide", "Un polypeptide", "Un nucléotide", "Un triglycéride"], correct: 1 },
+  { id: 80, section: 1, question: "Qu'est-ce que la \"conformation native\" d'une protéine ?", options: ["Sa séquence d'acides aminés.", "Sa forme tridimensionnelle repliée et fonctionnelle.", "Son état dégradé après digestion.", "La façon dont elle est codée par l'ADN."], correct: 1 },
+  { id: 81, section: 1, question: "Que se passe-t-il lorsqu'une protéine se dénature ?", options: ["Elle perd sa forme 3D et devient inactive.", "Elle se lie à une autre protéine pour s'activer.", "Elle est coupée en acides aminés.", "Elle se réplique."], correct: 0 },
+  { id: 82, section: 1, question: "Lequel de ces facteurs ne provoque PAS la dénaturation d'une protéine ?", options: ["Une forte variation de pH.", "Une forte augmentation de température.", "La présence d'une autre protéine active.", "Une forte concentration en certains sels."], correct: 2 },
+  { id: 83, section: 1, question: "Quel est le rôle de l'hémoglobine ?", options: ["Réguler le taux de sucre dans le sang.", "Assurer la contraction musculaire.", "Transporter l'oxygène dans le sang.", "Constituer les cheveux et les ongles."], correct: 2 },
+  { id: 84, section: 1, question: "Quel est le rôle de l'insuline ?", options: ["Réguler la concentration de glucose dans le sang.", "Transporter les lipides.", "Accélérer les réactions chimiques.", "Défendre l'organisme contre les bactéries."], correct: 0 },
+  { id: 85, section: 1, question: "Quelle est la caractéristique commune majeure des lipides ?", options: ["Ils sont tous des polymères.", "Ils sont hydrophobes (peu ou pas solubles dans l'eau).", "Ils sont chargés électriquement.", "Ils stockent l'information génétique."], correct: 1 },
+  { id: 86, section: 1, question: "Le caractère hydrophobe des lipides repose sur la présence de liaisons de quel type ?", options: ["Ioniques", "Polaires", "Non polaires (comme C-H)", "Hydrogène"], correct: 2 },
+  { id: 87, section: 1, question: "Quelles sont les 3 grandes familles de lipides ?", options: ["Sucres, amidon, glycogène.", "ADN, ARN, ATP.", "Graisses, phospholipides, stéroïdes.", "Kératine, actine, myosine."], correct: 2 },
+  { id: 88, section: 1, question: "De quoi est constituée une graisse (triglycéride) ?", options: ["D'un glycérol et de trois acides gras.", "D'un glycérol et de trois groupements phosphate.", "D'une chaîne de monosaccharides.", "De la polymérisation d'acides aminés."], correct: 0 },
+  { id: 89, section: 1, question: "Quelle est la différence entre un acide gras saturé et un acide gras insaturé ?", options: ["Saturé contient du carbone, insaturé n'en contient pas.", "Saturé ne contient pas de double liaison C=C, insaturé en contient au moins une.", "Saturé est liquide, insaturé est solide à température ambiante.", "Saturé est soluble dans l'eau, insaturé ne l'est pas."], correct: 1 },
+  { id: 90, section: 1, question: "De quoi est constitué un phospholipide ?", options: ["D'un glycérol, 3 acides gras et un phosphate.", "D'une chaîne d'acides aminés.", "D'un glycérol, 2 acides gras et un groupement phosphate.", "D'une base azotée, un sucre et un phosphate."], correct: 2 },
+  { id: 91, section: 1, question: "Pourquoi dit-on qu'un phospholipide est une molécule amphiphile ?", options: ["Parce qu'elle est très grande.", "Parce qu'elle possède une partie hydrophile et une partie hydrophobe.", "Parce qu'elle peut se diviser en deux.", "Parce qu'elle ne réagit avec aucune autre molécule."], correct: 1 },
+  { id: 92, section: 1, question: "Quel est le rôle principal des phospholipides ?", options: ["Stocker l'énergie à long terme.", "Agir comme des enzymes.", "Constituer les membranes cellulaires.", "Transporter l'oxygène."], correct: 2 },
+  { id: 93, section: 1, question: "Le cholestérol est un exemple de quel type de lipide ?", options: ["Graisse", "Phospholipide", "Stéroïde", "Acide gras"], correct: 2 },
+  { id: 94, section: 1, question: "Quelle est la principale différence fonctionnelle entre la graisse blanche et la graisse brune ?", options: ["Blanche stocke l'énergie (ATP), brune produit de la chaleur.", "Blanche constitue les membranes, brune stocke l'énergie.", "Blanche est présente chez les animaux, brune chez les végétaux.", "Blanche est solide, brune est liquide."], correct: 0 },
+  { id: 95, section: 1, question: "Comment s'appelle la réaction qui forme une graisse en éliminant une molécule d'eau ?", options: ["Hydrolyse", "Condensation", "Dénaturation", "Oxydation"], correct: 1 },
+  { id: 96, section: 1, question: "Quel est le flux de l'information génétique ?", options: ["Protéine → ARN → ADN", "ADN → ARN → Protéine", "ARN → ADN → Protéine", "ADN → Protéine → ARN"], correct: 1 },
+  { id: 97, section: 1, question: "La transcription est la synthèse de ____ à partir de ____.", options: ["Protéine / ARN", "ARN / ADN", "ADN / ARN", "ADN / ADN"], correct: 1 },
+  { id: 98, section: 1, question: "De quoi est composé un nucléotide ?", options: ["Un acide aminé, un sucre, une base azotée.", "Un glycérol, un acide gras, un phosphate.", "Un groupement phosphate, un sucre pentose, une base azotée.", "Uniquement d'une base azotée."], correct: 2 },
+  { id: 99, section: 1, question: "Quelle est la différence de sucre entre l'ADN et l'ARN ?", options: ["L'ADN contient du ribose, l'ARN du désoxyribose.", "L'ADN contient du glucose, l'ARN du ribose.", "L'ADN contient du désoxyribose, l'ARN du ribose.", "Il n'y a pas de différence."], correct: 2 },
+  { id: 100, section: 1, question: "Quelle base azotée est présente dans l'ARN mais absente dans l'ADN ?", options: ["Adénine (A)", "Guanine (G)", "Thymine (T)", "Uracile (U)"], correct: 3 },
+  { id: 101, section: 1, question: "Comment les bases azotées s'apparient-elles dans l'ADN ?", options: ["A avec G, et C avec T.", "A avec T, et G avec C.", "A avec C, et G avec T.", "A avec U, et G avec C."], correct: 1 },
+  { id: 102, section: 1, question: "Décrivez la structure de la molécule d'ADN.", options: ["Une simple chaîne de nucléotides.", "Deux chaînes de nucléotides enroulées en double hélice.", "Une molécule sphérique.", "Un polymère de glucose."], correct: 1 },
+  { id: 103, section: 1, question: "Décrivez la structure de la molécule d'ARN.", options: ["Une simple chaîne de nucléotides.", "Une double hélice.", "Un polymère d'acides aminés.", "Une molécule à quatre chaînes."], correct: 0 },
+  { id: 104, section: 1, question: "Où se déroule la transcription chez les eucaryotes ?", options: ["Dans le cytoplasme.", "Dans le noyau.", "Dans la mitochondrie.", "Dans la membrane plasmique."], correct: 1 },
+  { id: 105, section: 1, question: "Où se déroule la traduction ?", options: ["Dans le noyau.", "Dans le cytoplasme, au niveau des ribosomes.", "Dans l'appareil de Golgi.", "À l'extérieur de la cellule."], correct: 1 },
+  { id: 106, section: 1, question: "Quel est le rôle de l'ATP en tant que dérivé des nucléotides ?", options: ["Coder l'information génétique.", "Constituer les membranes.", "Servir de molécule énergétique pour la cellule.", "Construire les muscles."], correct: 2 },
+  { id: 107, section: 2, question: "Qu'est-ce qui caractérise principalement une cellule eucaryote par rapport à une cellule procaryote ?", options: ["La présence d'une membrane plasmique.", "La présence de ribosomes.", "La présence d'un noyau délimité par une enveloppe.", "La capacité de se déplacer."], correct: 2 },
+  { id: 108, section: 2, question: "Quelle est l'épaisseur approximative de la membrane plasmique ?", options: ["7-8 µm", "7-8 mm", "7-8 nm", "7-8 cm"], correct: 2 },
+  { id: 109, section: 2, question: "La membrane plasmique est constituée de :", options: ["~90% de glucides et ~10% de lipides.", "~45% lipides, ~45% protéines, ~10% glucides.", "~90% de protéines et ~10% de lipides.", "Uniquement de phospholipides."], correct: 1 },
+  { id: 110, section: 2, question: "Comment sont organisés les phospholipides pour former la membrane ?", options: ["En une seule couche.", "En une bicouche, avec les têtes hydrophiles vers l'extérieur et les queues hydrophobes vers l'intérieur.", "En une bicouche, avec les queues hydrophobes vers l'extérieur.", "De manière aléatoire."], correct: 1 },
+  { id: 111, section: 2, question: "Une protéine qui traverse la membrane de part en part est dite :", options: ["Périphérique", "Interne", "Transmembranaire", "Intrinsèque"], correct: 2 },
+  { id: 112, section: 2, question: "Qu'est-ce que le glycocalyx (ou cell-coat) ?", options: ["Le réseau de filaments à l'intérieur de la cellule.", "Le manteau de glucides sur la face externe de la membrane plasmique.", "La couche de lipides qui entoure la cellule.", "La partie interne de l'enveloppe nucléaire."], correct: 1 },
+  { id: 113, section: 2, question: "De quel côté de la membrane se trouve le glycocalyx ?", options: ["Sur le feuillet intracellulaire (vers le cytoplasme).", "Des deux côtés de la membrane.", "Sur le feuillet extracellulaire (vers l'extérieur).", "À l'intérieur du noyau."], correct: 2 },
+  { id: 114, section: 2, question: "Citez une fonction du glycocalyx.", options: ["La production d'ATP.", "La reconnaissance cellulaire.", "La synthèse des protéines.", "Le stockage de l'eau."], correct: 1 },
+  { id: 115, section: 2, question: "Quelle est la propriété essentielle de la membrane qui lui permet de contrôler les échanges ?", options: ["Sa rigidité totale.", "Sa perméabilité sélective.", "Son imperméabilité totale.", "Sa fluidité extrême."], correct: 1 },
+  { id: 116, section: 2, question: "Expliquez le concept de \"mosaïque fluide\".", options: ["La membrane est une structure rigide et figée.", "Les lipides et protéines sont répartis de façon hétérogène (mosaïque) et peuvent se déplacer (fluide).", "La membrane est composée uniquement d'eau.", "Les protéines sont fixes et les lipides se déplacent autour."], correct: 1 },
+  { id: 117, section: 2, question: "Qu'est-ce que le mouvement de \"flip-flop\" ?", options: ["Le déplacement horizontal d'un lipide.", "La rotation d'un lipide sur lui-même.", "Le basculement d'un lipide d'un feuillet à l'autre de la membrane.", "L'entrée et la sortie d'une protéine de la membrane."], correct: 2 },
+  { id: 118, section: 2, question: "Une membrane riche en acides gras insaturés (coudés) sera :", options: ["Plus fluide.", "Plus rigide.", "Plus épaisse.", "Moins perméable."], correct: 0 },
+  { id: 119, section: 2, question: "Quel est le rôle du cholestérol dans la membrane ?", options: ["Il sert uniquement à la rendre plus rigide.", "Il est un régulateur de la fluidité membranaire.", "Il transporte les protéines.", "Il n'a aucun rôle dans la membrane plasmique."], correct: 1 },
+  { id: 120, section: 2, question: "Définissez le cytosol.", options: ["Le contenu total de la cellule.", "Le liquide contenu dans le noyau.", "Le cytoplasme sans les organites (la matrice fluide).", "L'ensemble des organites de la cellule."], correct: 2 },
+  { id: 121, section: 2, question: "De quoi le cytosol est-il principalement composé ?", options: ["D'acides nucléiques.", "D'eau (~85%).", "De lipides.", "De sels minéraux solides."], correct: 1 },
+  { id: 122, section: 2, question: "Qu'est-ce qu'un organite ?", options: ["Toute molécule présente dans la cellule.", "Un compartiment cellulaire délimité par une membrane, assurant une fonction spécifique.", "L'ensemble du cytosquelette.", "Une particule non délimitée par une membrane, comme un ribosome."], correct: 1 },
+  { id: 123, section: 2, question: "Quelle est la fonction principale du noyau ?", options: ["Produire de l'énergie (ATP).", "Contenir l'information génétique (ADN) et contrôler les activités cellulaires.", "Digérer les déchets.", "Synthétiser les lipides."], correct: 1 },
+  { id: 124, section: 2, question: "Quelle est la fonction principale des mitochondries ?", options: ["La synthèse des protéines destinées à l'exportation.", "La production d'énergie cellulaire (ATP).", "Le stockage de l'information génétique.", "La modification et le tri des protéines."], correct: 1 },
+  { id: 125, section: 2, question: "Qu'est-ce que l'enveloppe nucléaire ?", options: ["Une simple membrane.", "Une double membrane percée de pores qui délimite le noyau.", "La membrane plasmique de la cellule.", "Le réseau du réticulum endoplasmique."], correct: 1 },
+  { id: 126, section: 2, question: "Quel est le rôle des pores nucléaires ?", options: ["La synthèse de l'ADN.", "Le stockage de l'ARN.", "La régulation des échanges entre le noyau et le cytoplasme.", "L'ancrage des chromosomes."], correct: 2 },
+  { id: 127, section: 2, question: "L'euchromatine est la forme ____ de la chromatine, qui est ____ en gènes.", options: ["condensée / pauvre", "décondensée / riche", "condensée / riche", "décondensée / pauvre"], correct: 1 },
+  { id: 128, section: 2, question: "Quel est le rôle du nucléole ?", options: ["La synthèse des ARNr et l'assemblage des ribosomes.", "Le stockage de l'ADN.", "La détoxication de la cellule.", "La production de l'énergie du noyau."], correct: 0 },
+  { id: 129, section: 2, question: "De quoi sont composés les ribosomes ?", options: ["D'ADN et de protéines.", "D'ARNr et de protéines.", "De lipides et de glucides.", "Uniquement de protéines."], correct: 1 },
+  { id: 130, section: 2, question: "Qu'est-ce que le Réticulum Endoplasmique (RE) ?", options: ["L'empilement de saccules de l'appareil de Golgi.", "Un réseau de membranes intracellulaires (citernes et tubules).", "L'ensemble des mitochondries de la cellule.", "Une grosse vésicule de digestion."], correct: 1 },
+  { id: 131, section: 2, question: "Quelle est la différence majeure entre le REG et le REL ?", options: ["Le REG est lisse, le REL porte des ribosomes.", "Le REG porte des ribosomes, le REL est lisse.", "Le REG produit des lipides, le REL des protéines.", "Le REG est dans le noyau, le REL dans le cytoplasme."], correct: 1 },
+  { id: 132, section: 2, question: "Où sont synthétisées les protéines destinées à être exportées ?", options: ["Sur les ribosomes libres dans le cytoplasme.", "Dans l'appareil de Golgi.", "Sur les ribosomes liés au REG.", "Dans le noyau."], correct: 2 },
+  { id: 133, section: 2, question: "Qu'est-ce qu'un polysome ?", options: ["Un complexe de plusieurs lysosomes.", "Une structure où un ARNm est lu simultanément par plusieurs ribosomes.", "La partie la plus dense du noyau.", "Une vésicule de transport."], correct: 1 },
+  { id: 134, section: 2, question: "Quel processus de modification des protéines a lieu dans le REG ?", options: ["La dénaturation", "La phosphorylation", "La glycosylation", "L'hydrolyse"], correct: 2 },
+  { id: 135, section: 2, question: "Laquelle de ces fonctions n'est PAS assurée par le REL ?", options: ["La synthèse des lipides et des stéroïdes.", "La synthèse des protéines.", "La détoxication.", "Le stockage du calcium."], correct: 1 },
+  { id: 136, section: 2, question: "Quel ion est stocké dans le REL, notamment pour la contraction musculaire ?", options: ["Le sodium (Na⁺)", "Le potassium (K⁺)", "Le fer (Fe²⁺)", "Le calcium (Ca²⁺)"], correct: 3 },
+  { id: 137, section: 2, question: "Une cellule du foie, spécialisée dans la détoxication, sera riche en quel organite ?", options: ["REG", "REL", "Lysosomes", "Appareil de Golgi"], correct: 1 },
+  { id: 138, section: 2, question: "De quoi est constitué l'appareil de Golgi (AG) ?", options: ["D'un réseau de tubules interconnectés.", "D'un empilement de saccules aplatis (dictyosome).", "D'une double membrane avec des crêtes.", "D'un ensemble de ribosomes."], correct: 1 },
+  { id: 139, section: 2, question: "Qu'est-ce qu'un dictyosome ?", options: ["Une seule vésicule de l'appareil de Golgi.", "Le réseau du réticulum endoplasmique.", "Un empilement de saccules de l'appareil de Golgi.", "Un lysosome en formation."], correct: 2 },
+  { id: 140, section: 2, question: "La face \"cis\" de l'appareil de Golgi est tournée vers ____, tandis que la face \"trans\" est tournée vers ____.", options: ["la membrane plasmique / le REG", "le REG / la membrane plasmique", "le noyau / le cytosol", "le cytosol / le noyau"], correct: 1 },
+  { id: 141, section: 2, question: "Quelle est la fonction générale de l'appareil de Golgi ?", options: ["La synthèse initiale des protéines.", "La production d'ATP.", "La modification, le tri et l'emballage des protéines et lipides.", "La dégradation des déchets cellulaires."], correct: 2 },
+  { id: 142, section: 2, question: "Qu'est-ce qu'une vésicule ?", options: ["Un filament du cytosquelette.", "Un organite d'emballage et de transport délimité par une membrane.", "Le site de la synthèse des protéines.", "Un pore dans l'enveloppe nucléaire."], correct: 1 },
+  { id: 143, section: 2, question: "Définissez l'endocytose.", options: ["La sortie de substances de la cellule.", "L'entrée de substances dans la cellule par formation d'une vésicule.", "La digestion de particules à l'intérieur de la cellule.", "Le transport passif de petites molécules."], correct: 1 },
+  { id: 144, section: 2, question: "Définissez l'exocytose.", options: ["L'entrée de substances dans la cellule.", "La sortie de substances de la cellule par fusion d'une vésicule avec la membrane.", "La division de la cellule en deux.", "La communication entre deux cellules."], correct: 1 },
+  { id: 145, section: 2, question: "Pourquoi l'endocytose et l'exocytose sont-elles considérées comme des transports \"actifs\" ?", options: ["Parce qu'elles ne concernent que les ions.", "Parce qu'elles se font sans dépense d'énergie.", "Parce qu'elles consomment de l'énergie (ATP).", "Parce qu'elles sont très lentes."], correct: 2 },
+  { id: 146, section: 2, question: "Qu'est-ce qu'un lysosome ?", options: ["Le site de la respiration cellulaire.", "Une vésicule contenant des enzymes digestives.", "Le centre organisateur des microtubules.", "Une structure qui synthétise les protéines."], correct: 1 },
+  { id: 147, section: 2, question: "Quel type d'enzymes les lysosomes contiennent-ils ?", options: ["Des ATP synthases.", "Des hydrolases acides.", "Des polymérases.", "Des ligases."], correct: 1 },
+  { id: 148, section: 2, question: "Comment les lysosomes assurent-ils la digestion intracellulaire ?", options: ["En exportant les déchets hors de la cellule.", "En fusionnant avec une vésicule et en y déversant leurs enzymes.", "En produisant de l'énergie.", "En synthétisant des molécules complexes."], correct: 1 },
+  { id: 149, section: 2, question: "Quel est le trajet correct d'une protéine sécrétée ?", options: ["REG → Vésicule → Appareil de Golgi → Vésicule → Membrane plasmique", "Appareil de Golgi → Vésicule → REG → Vésicule → Membrane plasmique", "Noyau → Lysosome → Membrane plasmique", "Ribosome libre → Vésicule → Membrane plasmique"], correct: 0 },
+  { id: 150, section: 2, question: "Si la protéine fabriquée est une enzyme lysosomale, quelle sera sa destination finale ?", options: ["Elle sera sécrétée hors de la cellule.", "Elle sera intégrée dans la membrane plasmique.", "Elle sera placée dans un lysosome.", "Elle restera dans l'appareil de Golgi."], correct: 2 },
+  { id: 151, section: 2, question: "Où une protéine destinée à l'exportation commence-t-elle à être fabriquée ?", options: ["Dans le noyau.", "Sur un ribosome lié au REG.", "Sur un ribosome libre dans le cytosol.", "Dans l'appareil de Golgi."], correct: 1 },
+  { id: 152, section: 2, question: "Quel organite fusionne avec la membrane plasmique lors de l'exocytose ?", options: ["Le lysosome", "La mitochondrie", "La vésicule de sécrétion", "Le noyau"], correct: 2 },
+  { id: 153, section: 2, question: "Dans quelle partie de la cellule l'appareil de Golgi est-il généralement localisé ?", options: ["Collé à la membrane plasmique.", "Libre dans le cytosol, loin de tout.", "À l'intérieur du noyau.", "Près du noyau et du réticulum endoplasmique."], correct: 3 },
+  { id: 154, section: 2, question: "Que deviennent les déchets non digérés par le lysosome ?", options: ["Ils sont réutilisés par la cellule.", "Ils restent dans la vésicule qui forme un corps résiduel.", "Ils sont détruits par les mitochondries.", "Ils sont envoyés vers le noyau."], correct: 1 },
+  { id: 155, section: 3, question: "Combien de membranes la mitochondrie possède-t-elle ?", options: ["Une", "Deux", "Trois", "Aucune"], correct: 1 },
+  { id: 156, section: 3, question: "Comment s'appellent les replis de la membrane interne ?", options: ["Les citernes", "Les saccules", "Les crêtes", "Les thylakoïdes"], correct: 2 },
+  { id: 157, section: 3, question: "Comment s'appelle le compartiment central de la mitochondrie ?", options: ["Le stroma", "La matrice", "Le cytosol", "Le nucléoplasme"], correct: 1 },
+  { id: 158, section: 3, question: "Que trouve-t-on dans la matrice mitochondriale qui est inhabituel pour un organite ?", options: ["De l'eau et des ions.", "De l'ADN et des ribosomes.", "Du glycogène.", "De la chlorophylle."], correct: 1 },
+  { id: 159, section: 3, question: "Où sont localisées les ATP synthases ?", options: ["Sur la membrane externe.", "Dans la matrice.", "Sur la membrane interne (au niveau des crêtes).", "Dans l'espace intermembranaire."], correct: 2 },
+  { id: 160, section: 3, question: "Quel est le processus global qui se déroule dans les mitochondries ?", options: ["La photosynthèse", "La respiration cellulaire", "La division cellulaire", "La digestion"], correct: 1 },
+  { id: 161, section: 3, question: "Quel est le \"carburant\" initial de la respiration cellulaire, dégradé dans le cytoplasme ?", options: ["L'oxygène", "L'ATP", "Le glucose", "L'eau"], correct: 2 },
+  { id: 162, section: 3, question: "La transformation du glucose en pyruvate s'appelle ____ et a lieu dans ____.", options: ["le cycle de Krebs / la matrice", "la glycolyse / le cytoplasme", "la photosynthèse / la mitochondrie", "la fermentation / le noyau"], correct: 1 },
+  { id: 163, section: 3, question: "Une fois dans la matrice mitochondriale, l'acide pyruvique entre dans :", options: ["La glycolyse", "La chaîne de transport d'électrons", "Le cycle de Krebs", "La formation d'une vésicule"], correct: 2 },
+  { id: 164, section: 3, question: "Quelle est la principale production du cycle de Krebs ?", options: ["La formation de transporteurs d'électrons et de protons (NADH, FADH₂).", "La consommation d'oxygène.", "La production directe de beaucoup d'ATP.", "La dégradation de l'eau."], correct: 0 },
+  { id: 165, section: 3, question: "Que deviennent les électrons (é) et les protons (H⁺) pris en charge par les transporteurs ?", options: ["Ils sont expulsés de la cellule.", "Ils sont cédés à la chaîne de transport d'électrons.", "Ils sont utilisés pour fabriquer du glucose.", "Ils sont stockés dans le noyau."], correct: 1 },
+  { id: 166, section: 3, question: "Où se situe la chaîne de transport d'électrons ?", options: ["Dans la membrane mitochondriale interne.", "Dans la membrane mitochondriale externe.", "Dans le cytoplasme.", "Dans la matrice."], correct: 0 },
+  { id: 167, section: 3, question: "Quel est l'accepteur final des électrons à la fin de cette chaîne ?", options: ["Le CO₂", "Le glucose", "L'eau", "L'oxygène"], correct: 3 },
+  { id: 168, section: 3, question: "La réaction entre l'oxygène, les électrons et les protons forme quelle molécule ?", options: ["Du glucose", "De l'ATP", "De l'eau (H₂O)", "Du dioxyde de carbone (CO₂)"], correct: 2 },
+  { id: 169, section: 3, question: "À quoi sert l'énergie libérée par le transport des électrons ?", options: ["À pomper des protons (H⁺) de la matrice vers l'espace intermembranaire.", "À fabriquer directement de l'ATP.", "À faire entrer l'oxygène dans la cellule.", "À diviser la mitochondrie."], correct: 0 },
+  { id: 170, section: 3, question: "Dans quel compartiment les protons (H⁺) s'accumulent-ils, créant un gradient ?", options: ["La matrice", "Le cytoplasme", "L'espace intermembranaire", "L'extérieur de la cellule"], correct: 2 },
+  { id: 171, section: 3, question: "À travers quelle enzyme les protons retournent-ils dans la matrice ?", options: ["La polymérase", "L'hydrolase", "L'ATP synthase", "La pepsine"], correct: 2 },
+  { id: 172, section: 3, question: "Que permet le flux de protons à travers l'ATP synthase ?", options: ["La destruction de l'ATP.", "La synthèse d'ATP à partir d'ADP et de P.", "Le pompage d'encore plus de protons.", "La production de CO₂."], correct: 1 },
+  { id: 173, section: 3, question: "La réaction ADP + P → ATP est une :", options: ["Hydrolyse", "Oxydation", "Phosphorylation", "Dénaturation"], correct: 2 },
+  { id: 174, section: 3, question: "Qu'est-ce que le chondriome ?", options: ["Une seule mitochondrie.", "L'ADN mitochondrial.", "L'ensemble des mitochondries d'une cellule.", "Une maladie mitochondriale."], correct: 2 },
+  { id: 175, section: 3, question: "Quel gaz est consommé par les mitochondries ?", options: ["Le dioxyde de carbone (CO₂)", "L'azote (N₂)", "L'oxygène (O₂)", "L'hydrogène (H₂)"], correct: 2 },
+  { id: 176, section: 3, question: "Quel gaz est rejeté par les mitochondries ?", options: ["Le dioxyde de carbone (CO₂)", "L'azote (N₂)", "L'oxygène (O₂)", "L'hydrogène (H₂)"], correct: 0 },
+  { id: 177, section: 4, question: "Laquelle de ces fonctions n'est PAS assurée par le cytosquelette ?", options: ["Le soutien de la cellule.", "Le stockage de l'information génétique.", "Le déplacement de la cellule.", "Le transport de substances dans le cytosol."], correct: 1 },
+  { id: 178, section: 4, question: "Quelles sont les 3 catégories de fibres du cytosquelette, par ordre de diamètre croissant ?", options: ["Microfilaments < Filaments intermédiaires < Microtubules", "Microtubules < Filaments intermédiaires < Microfilaments", "Filaments intermédiaires < Microtubules < Microfilaments", "Microfilaments < Microtubules < Filaments intermédiaires"], correct: 0 },
+  { id: 179, section: 4, question: "De quelle protéine sont formés les microfilaments ?", options: ["Tubuline", "Kératine", "Actine", "Myosine"], correct: 2 },
+  { id: 180, section: 4, question: "Quelle est la différence entre l'actine G et l'actine F ?", options: ["G est le polymère, F est le monomère.", "G est le monomère (globulaire), F est le polymère (fibrillaire).", "G se trouve dans les muscles, F dans les autres cellules.", "Il n'y a pas de différence."], correct: 1 },
+  { id: 181, section: 4, question: "Quelle est la fonction principale des microfilaments ?", options: ["Assurer la résistance mécanique à la tension.", "Contrôler la forme cellulaire et permettre les mouvements de contraction.", "Former le fuseau de division.", "Transporter les organites sur de longues distances."], correct: 1 },
+  { id: 182, section: 4, question: "Laquelle de ces protéines n'est PAS constitutive des filaments intermédiaires ?", options: ["La kératine", "La vimentine", "Les lamines nucléaires", "La tubuline"], correct: 3 },
+  { id: 183, section: 4, question: "Quelle est la fonction principale des filaments intermédiaires ?", options: ["Assurer la résistance mécanique de la cellule.", "Permettre le mouvement des cils.", "Former un anneau contractile pour la division.", "Augmenter la surface d'échange."], correct: 0 },
+  { id: 184, section: 4, question: "De quelle protéine sont constitués les microtubules ?", options: ["Actine", "Kératine", "Tubuline", "Desmine"], correct: 2 },
+  { id: 185, section: 4, question: "Qu'est-ce que l'instabilité dynamique des microtubules ?", options: ["Leur capacité à se tordre sans se casser.", "Leur capacité à s'allonger et se raccourcir rapidement.", "Leur tendance à se lier aux autres filaments.", "Le fait qu'ils soient toujours en mouvement."], correct: 1 },
+  { id: 186, section: 4, question: "Laquelle de ces structures est une forme microtubulaire stable ?", options: ["Le fuseau de division", "Les cils et flagelles", "L'anneau contractile", "Les lamellipodes"], correct: 1 },
+  { id: 187, section: 4, question: "Laquelle de ces structures est une forme microtubulaire transitoire ?", options: ["Le centriole", "Le corps basal", "Le fuseau de division", "Le flagelle"], correct: 2 },
+  { id: 188, section: 4, question: "Quelle est la structure interne d'un cil (en coupe transversale) ?", options: ["9 triplets de microtubules.", "9 doublets de microtubules + 2 microtubules centraux.", "13 protofilaments.", "Un réseau d'actine."], correct: 1 },
+  { id: 189, section: 4, question: "De quoi est constitué un centriole ?", options: ["De 9 triplets de microtubules.", "De 9 doublets + 2 microtubules centraux.", "D'une double hélice d'actine.", "D'un enroulement de filaments de kératine."], correct: 0 },
+  { id: 190, section: 4, question: "Qu'est-ce qu'un diplosome ?", options: ["Une paire de chromosomes.", "Une paire de ribosomes.", "Deux centrioles perpendiculaires l'un à l'autre.", "Une vésicule à double membrane."], correct: 2 },
+  { id: 191, section: 4, question: "Qu'est-ce que le COMT ou centrosome ?", options: ["Le centre de la cellule, le noyau.", "Le principal site d'organisation des microtubules.", "Le point d'ancrage des filaments intermédiaires.", "Le lieu de synthèse de l'actine."], correct: 1 },
+  { id: 192, section: 4, question: "Quel est le rôle du COMT ?", options: ["Servir de point de départ à la croissance des microtubules.", "Synthétiser la tubuline.", "Stocker le calcium.", "Assurer la résistance mécanique du noyau."], correct: 0 },
+  { id: 193, section: 4, question: "L'extrémité (-) des microtubules est généralement ancrée où ?", options: ["À la membrane plasmique.", "Dans le COMT (centrosome).", "Au niveau des mitochondries.", "Elle est toujours libre dans le cytoplasme."], correct: 1 },
+  { id: 194, section: 4, question: "Quelle fibre du cytosquelette forme les \"rails\" pour le transport des vésicules ?", options: ["Les microfilaments", "Les filaments intermédiaires", "Les microtubules", "Les filaments de myosine"], correct: 2 },
+  { id: 195, section: 4, question: "Quelle fibre assure le soutien des microvillosités ?", options: ["Les microfilaments d'actine", "Les filaments intermédiaires", "Les microtubules", "Les lamines nucléaires"], correct: 0 },
+  { id: 196, section: 4, question: "Quelle fibre est la plus résistante à la tension mécanique (étirement) ?", options: ["Les microfilaments", "Les filaments intermédiaires", "Les microtubules", "L'actine F"], correct: 1 },
+  {
+    "id": 197,
+    "section": 5,
+    "question": "Parmi les schémas suivants, lequel représente correctement une cellule animale eucaryote ?",
+    "image": "questions-images/question_1.jpeg",
+    "hint": "Cherchez le noyau, les mitochondries et l'absence de paroi",
+    "explanation": "La cellule animale possede un noyau, des mitochondries, un RE et un Golgi, mais PAS de paroi ni de chloroplastes.",
+    "options": [
+      "A - Cellule procaryote",
+      "B - Cellule végétale",
+      "C - Cellule animale eucaryote",
+      "D - Schéma incomplet"
+    ],
+    "correct": 2
+  },
+  {
+    "id": 198,
+    "section": 5,
+    "question": "Lequel de ces schémas illustre le modèle de la 'mosaïque fluide' de la membrane plasmique ?",
+    "image": "questions-images/question_2.jpeg",
+    "hint": "Bicouche lipidique avec protéines intégrées et périphériques",
+    "explanation": "Le modele mosaique fluide (Singer & Nicolson, 1972) montre une bicouche de phospholipides avec des proteines integrees et peripheriques.",
+    "options": [
+      "A - Membrane sans protéines",
+      "B - Modèle mosaïque fluide",
+      "C - Modèle sandwich",
+      "D - Monocouche lipidique"
+    ],
+    "correct": 1
+  },
+  {
+    "id": 199,
+    "section": 5,
+    "question": "Identifiez le schéma de l'appareil de Golgi.",
+    "image": "questions-images/question_3.jpeg",
+    "hint": "Empilement de saccules avec face cis et trans",
+    "explanation": "L'appareil de Golgi est un empilement de saccules aplatis (dictyosomes) avec une face cis (entree) et trans (sortie).",
+    "options": [
+      "A - Réticulum endoplasmique granuleux",
+      "B - Réticulum endoplasmique lisse",
+      "C - Mitochondrie",
+      "D - Appareil de Golgi"
+    ],
+    "correct": 3
+  },
+  {
+    "id": 200,
+    "section": 5,
+    "question": "Quel schéma illustre correctement le trajet d'une protéine destinée à la sécrétion (exocytose) ?",
+    "image": "questions-images/question_4.jpeg",
+    "hint": "Suivez le trajet: ribosome → REG → vésicules → Golgi → membrane",
+    "explanation": "Synthese sur ribosome du REG, puis vesicules vers Golgi pour maturation, puis secretion vers membrane plasmique.",
+    "options": [
+      "A - Trajet sans passage par le Golgi",
+      "B - REG → Golgi → Membrane plasmique",
+      "C - Trajet inversé",
+      "D - Synthèse par ribosome libre"
+    ],
+    "correct": 1
+  },
+  {
+    "id": 201,
+    "section": 5,
+    "question": "Parmi les schémas suivants, lequel représente un phospholipide ?",
+    "image": "questions-images/question_5.jpeg",
+    "hint": "Tête hydrophile + 2 queues hydrophobes",
+    "explanation": "Le phospholipide a une tete hydrophile (glycerol + phosphate) et 2 queues d'acides gras hydrophobes.",
+    "options": [
+      "A - Triglycéride",
+      "B - Cholestérol",
+      "C - Phospholipide",
+      "D - Acide gras libre"
+    ],
+    "correct": 2
+  },
+  {
+    "id": 202,
+    "section": 5,
+    "question": "Identifiez le schéma correct d'une mitochondrie.",
+    "image": "questions-images/question_6.jpeg",
+    "hint": "Double membrane avec crêtes et matrice",
+    "explanation": "La mitochondrie possede une double membrane : externe lisse et interne avec cretes, contenant la matrice.",
+    "options": [
+      "A - Mitochondrie",
+      "B - Lysosome",
+      "C - Chloroplaste",
+      "D - Noyau"
+    ],
+    "correct": 0
+  },
+  {
+    "id": 203,
+    "section": 5,
+    "question": "Lequel de ces schémas représente un microtubule ?",
+    "image": "questions-images/question_7.jpeg",
+    "hint": "13 protofilaments en tube creux, 25nm diamètre",
+    "explanation": "Le microtubule est un tube creux de 25nm forme de 13 protofilaments de tubuline alpha/beta.",
+    "options": [
+      "A - Microfilament d'actine",
+      "B - Filament intermédiaire",
+      "C - ADN",
+      "D - Microtubule"
+    ],
+    "correct": 3
+  },
+  {
+    "id": 204,
+    "section": 5,
+    "question": "Identifiez la coupe transversale d'un centriole.",
+    "image": "questions-images/question_8.jpeg",
+    "hint": "9 triplets de microtubules en cercle (9×3)",
+    "explanation": "Le centriole montre 9 triplets de microtubules (9x3) disposes en cercle, contrairement au cil/flagelle (9+2).",
+    "options": [
+      "A - Cil/Flagelle (9+2)",
+      "B - Centriole (9×3)",
+      "C - Microtubule seul",
+      "D - Structure désorganisée"
+    ],
+    "correct": 1
+  }
+];
+
+        const sectionNames = ["Introduction & Concepts", "Constituants Matiere", "Cellule Eucaryote", "Mitochondries", "Cytosquelette", "Schemas Visuels"];
+
+        // State
+        let currentQuestions = [], currentIndex = 0, score = 0, streak = 0, bestStreak = 0;
+        let correctAnswers = 0, wrongQuestions = [], answered = false;
+        let soundEnabled = true, currentMode = 'random', currentSection = null;
+        let audioCtx = null, isLightMode = false;
+        let answerHistory = []; // Track answer history
+
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            initAudio();
+            const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+            o.connect(g); g.connect(audioCtx.destination);
+            if (type === 'correct') {
+                o.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+                o.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1);
+                o.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2);
+                g.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                o.start(audioCtx.currentTime); o.stop(audioCtx.currentTime + 0.4);
+            } else if (type === 'wrong') {
+                o.frequency.setValueAtTime(200, audioCtx.currentTime);
+                o.frequency.setValueAtTime(150, audioCtx.currentTime + 0.1);
+                g.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                o.start(audioCtx.currentTime); o.stop(audioCtx.currentTime + 0.3);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('soundBtn').innerHTML = soundEnabled ? '&#128266;' : '&#128263;';
+        }
+
+        function toggleTheme() {
+            isLightMode = !isLightMode;
+            document.body.classList.toggle('light-mode', isLightMode);
+            document.getElementById('themeBtn').innerHTML = isLightMode ? '&#9728;' : '&#9790;';
+            localStorage.setItem('bioquiz_theme', isLightMode ? 'light' : 'dark');
+        }
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function showStart() { showScreen('startScreen'); }
+        function showSections() { showScreen('sectionScreen'); }
+        function showDashboard() { updateDashboard(); showScreen('dashboardScreen'); }
+
+        function confirmQuit() {
+            if (confirm('Voulez-vous vraiment quitter ? Votre progression sera perdue.')) {
+                showStart();
+            }
+        }
+
+        function shuffleArray(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+            return a;
+        }
+
+        function startQuiz(mode, section = null) {
+            currentMode = mode; currentSection = section;
+            currentQuestions = mode === 'random' ? shuffleArray(questions) : shuffleArray(questions.filter(q => q.section === section));
+            currentIndex = 0; score = 0; streak = 0; bestStreak = 0; correctAnswers = 0; wrongQuestions = [];
+            answerHistory = [];
+            document.getElementById('historyListSidebar').innerHTML = '';
+            updateHistoryDisplay();
+            showScreen('quizScreen'); loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentIndex >= currentQuestions.length) { endQuiz(); return; }
+            const q = currentQuestions[currentIndex];
+            answered = false;
+
+            document.getElementById('questionNumber').textContent = `Question ${currentIndex + 1}/${currentQuestions.length}`;
+            document.getElementById('progressFill').style.width = `${(currentIndex / currentQuestions.length) * 100}%`;
+            document.getElementById('questionText').textContent = q.question;
+            document.getElementById('streakDisplay').textContent = streak;
+            document.getElementById('totalDisplay').textContent = `${correctAnswers}/${currentIndex}`;
+
+            // Gestion des images pour les questions visuelles
+            const imgEl = document.getElementById('questionImage');
+            if (q.image) {
+                imgEl.src = q.image;
+                imgEl.style.display = 'block';
+                imgEl.onclick = () => zoomImage(q.image);
+            } else {
+                imgEl.style.display = 'none';
+                imgEl.onclick = null;
+            }
+
+            const opts = document.getElementById('options');
+            opts.innerHTML = '';
+            ['A', 'B', 'C', 'D'].forEach((l, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = `<span class="letter">${l}</span><span class="option-text">${q.options[i]}</span>`;
+                btn.onclick = () => selectAnswer(i);
+                btn.id = `option-${i}`;
+                opts.appendChild(btn);
+            });
+
+            document.getElementById('feedback').classList.remove('show', 'correct', 'wrong');
+            document.getElementById('nextBtn').classList.remove('show');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function selectAnswer(index) {
+            if (answered) return;
+            answered = true;
+            const q = currentQuestions[currentIndex];
+            const isCorrect = index === q.correct;
+
+            document.getElementById(`option-${index}`).classList.add(isCorrect ? 'correct' : 'wrong');
+            if (!isCorrect) document.getElementById(`option-${q.correct}`).classList.add('correct');
+
+            if (isCorrect) {
+                let points = 100 + streak * 10;
+                score += points; streak++; correctAnswers++;
+                if (streak > bestStreak) bestStreak = streak;
+                const msg = q.explanation ? `+${points} pts ! ${q.explanation}` : `+${points} points !`;
+                showFeedback(true, msg);
+                playSound('correct'); createConfetti();
+            } else {
+                streak = 0; wrongQuestions.push(q.id);
+                const msg = q.explanation
+                    ? `Reponse ${['A', 'B', 'C', 'D'][q.correct]} : ${q.explanation}`
+                    : `La bonne reponse etait ${['A', 'B', 'C', 'D'][q.correct]}`;
+                showFeedback(false, msg);
+                playSound('wrong');
+            }
+
+            // Add to history
+            addToHistory(currentIndex + 1, isCorrect);
+
+            document.getElementById('streakDisplay').textContent = streak;
+            document.getElementById('totalDisplay').textContent = `${correctAnswers}/${currentIndex + 1}`;
+            document.getElementById('nextBtn').classList.add('show');
+            document.querySelectorAll('.option-btn').forEach(b => b.classList.add('disabled'));
+        }
+
+        function addToHistory(qNum, isCorrect) {
+            answerHistory.push({ num: qNum, correct: isCorrect });
+            const list = document.getElementById('historyListSidebar');
+            const item = document.createElement('div');
+            item.className = `history-item ${isCorrect ? 'correct' : 'wrong'}`;
+            item.innerHTML = `<span class="q-num">Q${qNum}</span><span class="q-result">${isCorrect ? '✓' : '✗'}</span>`;
+            list.appendChild(item);
+            list.scrollTop = list.scrollHeight;
+            updateHistoryDisplay();
+        }
+
+        function updateHistoryDisplay() {
+            const correct = answerHistory.filter(a => a.correct).length;
+            const total = answerHistory.length;
+            document.getElementById('historyTotal').textContent = `${correct}/${total}`;
+        }
+
+        function zoomImage(imgSrc) {
+            document.getElementById('zoomModalImage').src = imgSrc;
+            document.getElementById('zoomModal').classList.add('show');
+        }
+
+        function closeZoomModal(event) {
+            if (!event || event.target === document.getElementById('zoomModal')) {
+                document.getElementById('zoomModal').classList.remove('show');
+            }
+        }
+
+        function showFeedback(ok, msg) {
+            const f = document.getElementById('feedback');
+            f.textContent = msg;
+            f.classList.remove('correct', 'wrong');
+            f.classList.add(ok ? 'correct' : 'wrong', 'show');
+        }
+
+        function nextQuestion() { currentIndex++; loadQuestion(); }
+
+        function endQuiz() {
+            const pct = (correctAnswers / currentQuestions.length) * 100;
+            let grade = pct >= 90 ? 'A+' : pct >= 80 ? 'A' : pct >= 70 ? 'B' : pct >= 60 ? 'C' : 'D';
+
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('finalGrade').textContent = grade;
+            document.getElementById('correctCount').textContent = `${correctAnswers}/${currentQuestions.length}`;
+            document.getElementById('accuracy').textContent = `${Math.round(pct)}%`;
+            document.getElementById('bestStreak').textContent = bestStreak;
+
+            saveProgress(score, pct, wrongQuestions);
+
+            const hist = getProgress();
+            const imp = document.getElementById('improvement');
+            if (hist.length > 1) {
+                const diff = score - hist[hist.length - 2].score;
+                imp.innerHTML = diff > 0 ? `+${diff} points vs derniere partie !` : diff < 0 ? `${diff} points vs derniere partie` : `Meme score !`;
+                imp.style.color = diff > 0 ? 'var(--success)' : diff < 0 ? 'var(--danger)' : 'var(--text-secondary)';
+            } else imp.innerHTML = 'Premiere partie terminee !';
+
+            showScreen('resultsScreen');
+            for (let i = 0; i < 3; i++) setTimeout(createConfetti, i * 300);
+        }
+
+        function restartQuiz() { startQuiz(currentMode, currentSection); }
+
+        function reviewMistakes() {
+            if (!wrongQuestions.length) { alert('Aucune erreur !'); return; }
+            currentQuestions = shuffleArray(questions.filter(q => wrongQuestions.includes(q.id)));
+            currentIndex = 0; score = 0; streak = 0; bestStreak = 0; correctAnswers = 0; wrongQuestions = [];
+            showScreen('quizScreen'); loadQuestion();
+        }
+
+        function createConfetti() {
+            const c = document.getElementById('confettiContainer');
+            const colors = ['#58a6ff', '#a371f7', '#3fb950', '#f85149', '#d29922'];
+            for (let i = 0; i < 50; i++) {
+                const p = document.createElement('div');
+                p.className = 'confetti-piece';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.background = colors[Math.floor(Math.random() * colors.length)];
+                p.style.animationDelay = Math.random() * 0.5 + 's';
+                p.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                c.appendChild(p);
+                setTimeout(() => p.remove(), 3000);
+            }
+        }
+
+        function saveProgress(s, acc, wrong) {
+            const p = getProgress();
+            p.push({ date: new Date().toLocaleDateString('fr-FR'), time: new Date().toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'}), score: s, accuracy: Math.round(acc), mode: currentMode === 'random' ? 'Aleatoire' : sectionNames[currentSection], questions: currentQuestions.length, wrong });
+            if (p.length > 20) p.shift();
+            localStorage.setItem('bioquiz_progress', JSON.stringify(p));
+            const w = JSON.parse(localStorage.getItem('bioquiz_weak') || '{}');
+            wrong.forEach(id => w[id] = (w[id] || 0) + 1);
+            localStorage.setItem('bioquiz_weak', JSON.stringify(w));
+        }
+
+        function getProgress() { return JSON.parse(localStorage.getItem('bioquiz_progress') || '[]'); }
+
+        function updateDashboard() {
+            const p = getProgress(), w = JSON.parse(localStorage.getItem('bioquiz_weak') || '{}');
+            if (p.length) {
+                const scores = p.map(x => x.score);
+                document.getElementById('dashBestScore').textContent = Math.max(...scores);
+                document.getElementById('dashAvgScore').textContent = Math.round(scores.reduce((a,b) => a+b, 0) / scores.length);
+            }
+            document.getElementById('dashTotalGames').textContent = p.length;
+            document.getElementById('dashboardHistory').innerHTML = p.length ? p.slice(-10).reverse().map(x => `<div class="history-item"><span>${x.date} ${x.time}</span><span><strong>${x.score}</strong> pts (${x.accuracy}%)</span></div>`).join('') : '<span style="color:var(--text-muted)">Aucune partie</span>';
+            const wEntries = Object.entries(w).sort((a,b) => b[1] - a[1]).slice(0, 10);
+            document.getElementById('weakQuestions').innerHTML = wEntries.length ? wEntries.map(([id, cnt]) => { const q = questions.find(x => x.id === parseInt(id)); return `<span class="weak-q" title="${q?.question || ''}">Q${id} (${cnt}x)</span>`; }).join('') : '<span style="color:var(--text-muted)">Aucune donnee</span>';
+        }
+
+        function clearProgress() {
+            if (confirm('Effacer toutes les statistiques ?')) {
+                localStorage.removeItem('bioquiz_progress');
+                localStorage.removeItem('bioquiz_weak');
+                updateDashboard();
+            }
+        }
+
+        // Init
+        const savedTheme = localStorage.getItem('bioquiz_theme');
+        if (savedTheme === 'light') { isLightMode = true; document.body.classList.add('light-mode'); document.getElementById('themeBtn').innerHTML = '&#9728;'; }
+    </script>
+</body>
+</html>
